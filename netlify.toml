@@ -1,4 +1,4 @@
 [build]
   publish = "/public"
   targetPort = "3000"
-  command = "npm run build"
+  command = "dotnet tool restore && dotnet fable src && webpack
