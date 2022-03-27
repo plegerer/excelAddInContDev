@@ -71,7 +71,7 @@ let update (msg: Msg) (state: State) =
         state, Cmd.none
     | UpdateMsg ->
         let cmd =
-            Cmd.OfPromise.perform UpdateValue () (fun x -> ("neuer Wert", "Test") |> OnPromiseSuccess)
+            Cmd.OfPromise.perform UpdateValue (state.Count) (fun x -> ("neuer Wert", "Test") |> OnPromiseSuccess)
 
         state, cmd
 
