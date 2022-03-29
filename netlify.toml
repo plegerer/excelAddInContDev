@@ -1,4 +1,4 @@
 [build]
   publish = "/public"
   targetPort = "3000"
-  command = "dotnet tool restore --disable-parallel && dotnet fable src && webpack"
+  command = "dotnet fable src && webpack"
