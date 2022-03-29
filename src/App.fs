@@ -68,7 +68,7 @@ let update (msg: Msg) (state: State) =
        
 
         { state with Excelstate = x + " : " + y },
-        Toast.message string y
+        Toast.message y
         |> Toast.position Toast.BottomCenter
         |> Toast.timeout (TimeSpan.FromSeconds(3.0))
         |> Toast.success
