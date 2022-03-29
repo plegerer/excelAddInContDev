@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start": "dotnet fable watch src --run webpack-dev-server",
-    "build": "dotnet fable src && webpack"
+    "build": "dotnet tool restore --disable-parallel && dotnet fable src && webpack"
   },
   "dependencies": {
     "fable-loader": "^2.1.9",
