@@ -65,10 +65,10 @@ let update (msg: Msg) (state: State) =
     | Increment -> { state with Count = state.Count + 3 }, Cmd.ofMsg UpdateMsg
     | Decrement -> { state with Count = state.Count - 1 }, Cmd.ofMsg UpdateMsg
     | OnPromiseSuccess (x, y) ->
-        printfn "%A" x
+       
 
         { state with Excelstate = x + " : " + y },
-        Toast.message x + " : " + y
+        Toast.message string y
         |> Toast.position Toast.BottomCenter
         |> Toast.timeout (TimeSpan.FromSeconds(3.0))
         |> Toast.success
