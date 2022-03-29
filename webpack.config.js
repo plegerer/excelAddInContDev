@@ -20,6 +20,13 @@ module.exports = {
             test: /\.fs(x|proj)?$/,
             enforce: "pre",
             use: "fable-loader"
+        },
+        {
+            test: /\.(sa|c)ss$/,
+            use: [
+                "style-loader",
+                "css-loader"
+            ]
         }]
     }
 }

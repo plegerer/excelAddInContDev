@@ -1,9 +1,11 @@
 module App
 
+open System
 open Elmish
 open Elmish.React
 open Feliz
 open ExcelJS.Fable.GlobalBindings
+open Thoth.Elmish
 
 
 let initializeAddIn () = Office.onReady ()
@@ -36,8 +38,7 @@ let UpdateValue x =
 
                 range.values <- customValue
 
-                if Office.context.requirements.isSetSupported ("ExcelApi", "1.2") then
-                    range.format.autofitColumns ()))
+                ))
 
 
 
@@ -65,13 +66,20 @@ let update (msg: Msg) (state: State) =
     | Decrement -> { state with Count = state.Count - 1 }, Cmd.ofMsg UpdateMsg
     | OnPromiseSuccess (x, y) ->
         printfn "%A" x
-        { state with Excelstate = x + " : " + y }, Cmd.none
+
+        { state with Excelstate = x + " : " + y },
+        Toast.message state.Excelstate
+        |> Toast.position Toast.BottomCenter
+        |> Toast.timeout (TimeSpan.FromSeconds(3.0))
+        |> Toast.success
     | OnPromiseError e ->
         printfn "%A" e
         state, Cmd.none
     | UpdateMsg ->
         let cmd =
-            Cmd.OfPromise.perform UpdateValue (state.Count) (fun x -> ("neuer Wert", "Test") |> OnPromiseSuccess)
+            Cmd.OfPromise.perform UpdateValue (state.Count) (fun x ->
+                ("neuer Wert", string state.Count)
+                |> OnPromiseSuccess)
 
         state, cmd
 
@@ -87,5 +95,6 @@ let render (state: State) (dispatch: Msg -> unit) =
                Html.p state.Excelstate ]
 
 Program.mkProgram init update render
+|> Toast.Program.withToast Toast.render
 |> Program.withReactSynchronous "elmish-app"
 |> Program.run
