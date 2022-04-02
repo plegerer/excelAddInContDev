@@ -7,7 +7,6 @@ open Feliz
 open ExcelJS.Fable.GlobalBindings
 open ExcelJS.Fable.Excel
 open Thoth.Elmish
-open Elmish
 
 
 
@@ -25,10 +24,12 @@ type Msg =
     | UpdateMsg
 
 
-let handleSelectionChange(event:WorksheetSelectionChangedEventArgs) =
+let handleSelectionChange (event:WorksheetSelectionChangedEventArgs) =
+    
     Excel.run (fun context -> 
                     context
-                        .sync())
+                        .sync().``then``(fun event -> Some event))
+    
 
                                 
 
@@ -41,8 +42,7 @@ let registerEvent() =
         
         let eventResult = worksheet.onSelectionChanged.add(handleSelectionChange)
         
-        context.sync().``then``
-                            (fun _ -> eventResult.context))
+        context.sync())
 
 
 
@@ -83,7 +83,7 @@ let init () =
             |> OnPromiseSuccess)
     let registerEventCmd =
         Cmd.OfPromise.perform registerEvent () (fun x ->
-            (string x.ToString, string x.ToString)
+            ("eventhandler", " registered")
             |> OnPromiseSuccess)
 
     { Count = 0; Excelstate = "" }, Cmd.batch [initialCmd
