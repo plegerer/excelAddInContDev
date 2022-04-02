@@ -5,7 +5,9 @@ open Elmish
 open Elmish.React
 open Feliz
 open ExcelJS.Fable.GlobalBindings
+open ExcelJS.Fable.Excel
 open Thoth.Elmish
+
 
 
 let initializeAddIn () = Office.onReady ()
@@ -20,6 +22,27 @@ type Msg =
     | OnPromiseSuccess of string * string
     | OnPromiseError of exn
     | UpdateMsg
+
+
+let handleSelectionChange(event:WorksheetSelectionChangedEventArgs) =
+    Excel.run (fun context -> 
+                    context
+                        .sync())
+
+                                
+
+
+let registerEvent() =
+    Excel.run (fun context ->
+
+        let worksheet =
+            context.workbook.worksheets.getActiveWorksheet ()
+        
+        let eventResult = 
+            worksheet.onSelectionChanged.add(handleSelectionChange)
+        
+        context.sync())
+
 
 
 let UpdateValue x =
@@ -56,6 +79,10 @@ let init () =
     let initialCmd =
         Cmd.OfPromise.perform Office.onReady () (fun x ->
             (x.host.ToString(), x.platform.ToString())
+            |> OnPromiseSuccess)
+    let registerEventCmd =
+        Cmd.OfPromise.perform registerEvent () (fun x ->
+            (string x.ToString, string x.ToString)
             |> OnPromiseSuccess)
 
     { Count = 0; Excelstate = "" }, initialCmd
