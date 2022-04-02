@@ -24,6 +24,24 @@ type Msg =
     | UpdateMsg
 
 
+
+let mapEvent = Event<Msg>()
+
+let mapEventSubscription initial =
+    let sub dispatch =
+        let msgSender msg = 
+            msg
+            |> dispatch
+            
+        mapEvent.Publish.Add(msgSender)
+
+    Cmd.ofSub sub
+
+
+
+
+
+
 let handleSelectionChange (event:WorksheetSelectionChangedEventArgs) =
     
     Excel.run (fun context -> 
@@ -31,7 +49,8 @@ let handleSelectionChange (event:WorksheetSelectionChangedEventArgs) =
                     context
                         .sync().``then``(fun x -> 
                                             let constext= "Event fired, address is: " + address
-                                            Console.Write constext
+                                            Console.WriteLine constext
+                                            mapEvent.Trigger (OnPromiseSuccess ("Address is: ", address) )
                                             Some x))
     
 
@@ -129,6 +148,7 @@ let render (state: State) (dispatch: Msg -> unit) =
                Html.p state.Excelstate ]
 
 Program.mkProgram init update render
+|> Program.withSubscription mapEventSubscription
 |> Toast.Program.withToast Toast.render
 |> Program.withReactSynchronous "elmish-app"
 |> Program.run
