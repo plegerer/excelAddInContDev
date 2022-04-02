@@ -113,7 +113,7 @@ let update (msg: Msg) (state: State) =
 
         state, cmd
 
-let handler ()
+
 
 let render (state: State) (dispatch: Msg -> unit) =
     Html.div [ Html.button [ prop.onClick (fun _ -> dispatch Increment)
