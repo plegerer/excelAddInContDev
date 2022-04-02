@@ -38,10 +38,10 @@ let registerEvent() =
         let worksheet =
             context.workbook.worksheets.getActiveWorksheet ()
         
-        let eventResult = 
-            worksheet.onSelectionChanged.add(handleSelectionChange)
+        let eventResult = worksheet.onSelectionChanged.add(handleSelectionChange)
         
-        context.sync())
+        context.sync().``then``
+                            (fun _ -> eventResult.context))
 
 
 
