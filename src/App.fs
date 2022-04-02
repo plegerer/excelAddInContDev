@@ -27,10 +27,12 @@ type Msg =
 let handleSelectionChange (event:WorksheetSelectionChangedEventArgs) =
     
     Excel.run (fun context -> 
+                    let address = event.address
                     context
-                        .sync().``then``(fun event -> 
-                                        Console.Write "fired"
-                                        Some event))
+                        .sync().``then``(fun x -> 
+                                            let constext= "Event fired, address is: " + address
+                                            Console.Write constext
+                                            Some x))
     
 
                         
