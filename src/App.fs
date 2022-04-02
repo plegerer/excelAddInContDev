@@ -7,6 +7,7 @@ open Feliz
 open ExcelJS.Fable.GlobalBindings
 open ExcelJS.Fable.Excel
 open Thoth.Elmish
+open Elmish
 
 
 
@@ -85,7 +86,8 @@ let init () =
             (string x.ToString, string x.ToString)
             |> OnPromiseSuccess)
 
-    { Count = 0; Excelstate = "" }, initialCmd
+    { Count = 0; Excelstate = "" }, Cmd.batch [initialCmd
+                                               registerEventCmd]
 
 let update (msg: Msg) (state: State) =
     match msg with
