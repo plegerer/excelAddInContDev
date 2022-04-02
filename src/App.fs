@@ -28,10 +28,12 @@ let handleSelectionChange (event:WorksheetSelectionChangedEventArgs) =
     
     Excel.run (fun context -> 
                     context
-                        .sync().``then``(fun event -> Some event))
+                        .sync().``then``(fun event -> 
+                                        Console.Write "fired"
+                                        Some event))
     
 
-                                
+                        
 
 
 let registerEvent() =
@@ -41,7 +43,6 @@ let registerEvent() =
             context.workbook.worksheets.getActiveWorksheet ()
         
         let eventResult = worksheet.onSelectionChanged.add(handleSelectionChange)
-        
         context.sync())
 
 
@@ -111,6 +112,8 @@ let update (msg: Msg) (state: State) =
                 |> OnPromiseSuccess)
 
         state, cmd
+
+let handler ()
 
 let render (state: State) (dispatch: Msg -> unit) =
     Html.div [ Html.button [ prop.onClick (fun _ -> dispatch Increment)
