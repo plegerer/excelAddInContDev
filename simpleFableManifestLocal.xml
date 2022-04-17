@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+          xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:type="TaskPaneApp">
+  <Id>5226365f-62d0-435f-a4af-cc6a7bd753b2</Id>
+  <Version>1.0.0.1</Version>
+  <ProviderName>TheOfficeContext.com</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="BasicAddin" />
+  <Description DefaultValue="This is a basic addin."/>
+  <IconUrl DefaultValue="" />
+  <Hosts>
+    <Host Name="Workbook" />
+  </Hosts>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:5000/" />
+  </DefaultSettings>
+  <AppDomains>
+    <AppDomain>https://messaging.office.com</AppDomain>
+    <AppDomain>https://excel.officeapps.live.com</AppDomain>
+  </AppDomains>
+  <Permissions>ReadWriteDocument</Permissions>
+</OfficeApp>
