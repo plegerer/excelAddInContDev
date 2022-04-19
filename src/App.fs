@@ -7,6 +7,7 @@ open Feliz
 open ExcelJS.Fable.GlobalBindings
 open ExcelJS.Fable.Excel
 open Thoth.Elmish
+open System
 
 
 
@@ -22,6 +23,8 @@ type Msg =
     | OnPromiseSuccess of string * string
     | OnPromiseError of exn
     | UpdateMsg
+    | OfficeInitialized of string * string
+    | EventRegistered
 
 
 
@@ -100,19 +103,26 @@ let UpdateValue x =
 
 let init () =
     let initialCmd =
-        Cmd.OfPromise.perform Office.onReady () (fun x ->
-            (x.host.ToString(), x.platform.ToString())
-            |> OnPromiseSuccess)
+        Cmd.OfPromise.perform initializeAddIn () 
+            (fun x ->
+                (x.host.ToString(), x.platform.ToString())|> OfficeInitialized)
     let registerEventCmd =
-        Cmd.OfPromise.perform registerEvent () (fun x ->
-            ("eventhandler", " registered")
-            |> OnPromiseSuccess)
-
-    { Count = 0; Excelstate = "" }, Cmd.batch [initialCmd
-                                               registerEventCmd]
+        Cmd.OfPromise.either registerEvent () (fun x ->
+                ("eventhandler", " registered")
+                |> OnPromiseSuccess) 
+            (fun e -> OnPromiseError e)
+    { Count = 0; Excelstate = "" }, Cmd.batch [initialCmd]
 
 let update (msg: Msg) (state: State) =
     match msg with
+    | OfficeInitialized (x,y) -> state , Cmd.ofMsg EventRegistered
+    | EventRegistered -> 
+        state, Cmd.OfPromise.either registerEvent () (fun x ->
+                ("eventhandler", " registered")
+                |> OnPromiseSuccess) 
+                (fun e -> OnPromiseError e)
+
+
     | Increment -> { state with Count = state.Count + 3 }, Cmd.ofMsg UpdateMsg
     | Decrement -> { state with Count = state.Count - 1 }, Cmd.ofMsg UpdateMsg
     | OnPromiseSuccess (x, y) ->
